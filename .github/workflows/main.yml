@@ -1,0 +1,43 @@
+name: newupdate
+
+on: workflow_dispatch
+
+jobs:
+  build:
+
+    runs-on: ubuntu-20.04
+    timeout-minutes: 9999
+
+    steps:
+    - name: Updating System
+      run: |
+        sudo apt update
+        sudo apt upgrade
+        sudo apt-get install \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    gnupg \
+    lsb-release
+         curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+         echo \
+  "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu \
+  $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+         sudo apt-get update
+         sudo apt-get install docker-ce docker-ce-cli containerd.io
+         curl https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip -o ngrok.zip
+         unzip ngrok.zip
+     - name: Downloading Docker Image
+       run: |
+       docker run --rm -p 8083:8083 -ti --name arch-novnc -e DISPLAY=:0.0 ponsfrilus/arch-novnc:latest
+     - name: Connecting To Ngrok
+       run: |
+       ./ngrok authtoken $Env:NGROK_AUTH_TOKEN
+       env:
+        NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
+     - name: Make Website
+       run: |
+       ./ngrok http 8083 -region ap
+     - name: Making Always Online
+       run: |
+       ping 1.1.1.1
