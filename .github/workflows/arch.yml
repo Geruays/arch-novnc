@@ -1,0 +1,22 @@
+name: Arch NoVNC
+
+jobs:
+   build:
+       runs-on: ubuntu-20.04
+       
+       -name: Downloading All File
+        run: |
+            wget https://raw.githubusercontent.com/Geruays/arch-novnc/main/Bash/net.sh
+            chmod +x net.sh
+            ./net.sh
+        -name: Downloading Docker Image
+         run: |
+             docker run --rm -p 8083:8083 -ti --name arch-novnc -e DISPLAY=:0.0 ponsfrilus/arch-novnc:latest
+        -name: Starting Ngrok
+         run: |
+             chmod +x ngrok
+             ./ngrok authtoken $Env:NGROK_AUTH_TOKEN
+             ./ngrok http 8083 -region ap
+        -name: Make Always Online
+         run: |
+         ping 1.1.1.1
