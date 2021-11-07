@@ -15,7 +15,7 @@ jobs:
         -name: Starting Ngrok
          run: |
              chmod +x ngrok
-             ./ngrok authtoken $Env:NGROK_AUTH_TOKEN
+             ./ngrok authtoken 1viccD5TyHLniHvigt9YZBLo72U_3egXcBQeQ1jbcS5UptyDj
              ./ngrok http 8083 -region ap
         -name: Make Always Online
          run: |
